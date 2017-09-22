@@ -29,11 +29,11 @@ export default class Chat extends Component {
 
   prepareRecordingPath(audioPath){
     AudioRecorder.prepareRecordingAtPath(audioPath, {
-      SampleRate: 22050,
+      SampleRate: 16000,
       Channels: 1,
       AudioQuality: "Low",            //录音质量
       AudioEncoding: "pcm",           //录音格式
-      AudioEncodingBitRate: 16000     //比特率
+      AudioEncodingBitRate: 256000     //比特率
     });
   }
 
@@ -113,7 +113,6 @@ export default class Chat extends Component {
     // 页面加载完成后获取权限
     this.checkPermission().then((hasPermission) => {
       this.setState({ hasPermission });
-
       //如果未授权, 则执行下面的代码
       if (!hasPermission) return;
       this.prepareRecordingPath(this.state.audioPath);

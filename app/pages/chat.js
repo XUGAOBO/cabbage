@@ -1,149 +1,143 @@
-import React, {Component} from 'react';
-
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View,
-  TouchableHighlight,
-  Platform,
-  PermissionsAndroid,
-} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, StyleSheet, TouchableHighlight, Platform, PermissionsAndroid } from 'react-native';
 import {AudioRecorder, AudioUtils} from 'react-native-audio';
+// let audioPath = AudioUtils.DocumentDirectoryPath + '/test.aac';
+// 目录/data/user/0/com.opms_rn/files/test.aac
 
 export default class Chat extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      currentTime: 0.0,                                                   //开始录音到现在的持续时间
+      recording: false,                                                   //是否正在录音
+      stoppedRecording: false,                                            //是否停止了录音
+      finished: false,                                                    //是否完成录音
+      audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',          //路径下的文件名
+      hasPermission: undefined,                                           //是否获取权限
+    };
+    this.prepareRecordingPath = this.prepareRecordingPath.bind(this);     //执行录音的方法
+    this.checkPermission = this.checkPermission.bind(this);               //检测是否授权
+    this.record = this.record.bind(this);                                 //录音
+    this.stop = this.stop.bind(this);                                     //停止
+    this.finishRecording = this.finishRecording.bind(this);
+  }
 
-    state = {
-      currentTime: 0.0,
-      recording: false,
-      stoppedRecording: false,
-      finished: false,
-      audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',
-      hasPermission: undefined,
+  prepareRecordingPath(audioPath){
+    AudioRecorder.prepareRecordingAtPath(audioPath, {
+      SampleRate: 22050,
+      Channels: 1,
+      AudioQuality: "Low",            //录音质量
+      AudioEncoding: "aac",           //录音格式
+      AudioEncodingBitRate: 32000     //比特率
+    });
+  }
+
+  checkPermission() {
+    if (Platform.OS !== 'android') {
+      return Promise.resolve(true);
+    }
+
+    const rationale = {
+      'title': '获取录音权限',
+      'message': 'XXX正请求获取麦克风权限用于录音,是否准许'
     };
 
-    prepareRecordingPath(audioPath){
-      AudioRecorder.prepareRecordingAtPath(audioPath, {
-        SampleRate: 22050,
-        Channels: 1,
-        AudioQuality: "Low",
-        AudioEncoding: "aac",
-        AudioEncodingBitRate: 32000
-      });
+    return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, rationale)
+      .then((result) => {
+        // alert(result);     //结果: granted ,    PermissionsAndroid.RESULTS.GRANTED 也等于 granted
+        return (result === true || PermissionsAndroid.RESULTS.GRANTED)
+      })
+  }
+
+  async record() {
+    // 如果正在录音
+    if (this.state.recording) {
+      console.warn('正在录音中!');
+      return;
     }
 
-    componentDidMount() {
-      this._checkPermission().then((hasPermission) => {
-        this.setState({ hasPermission });
-
-        if (!hasPermission) return;
-
-        this.prepareRecordingPath(this.state.audioPath);
-
-        AudioRecorder.onProgress = (data) => {
-          this.setState({currentTime: Math.floor(data.currentTime)});
-        };
-
-        AudioRecorder.onFinished = (data) => {
-          if (Platform.OS === 'ios') {
-            this._finishRecording(data.status === "OK", data.audioFileURL);
-          }
-        };
-      });
+    //如果没有获取权限
+    if (!this.state.hasPermission) {
+      console.warn('没有获取录音权限!');
+      return;
     }
 
-    _checkPermission() {
-      if (Platform.OS !== 'android') {
-        return Promise.resolve(true);
-      }
-
-      const rationale = {
-        'title': 'Microphone Permission',
-        'message': 'AudioExample needs access to your microphone so you can record audio.'
-      };
-
-      return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, rationale)
-        .then((result) => {
-          console.log('Permission result:', result);
-          return (result === true || result === PermissionsAndroid.RESULTS.GRANTED);
-        });
+    //如果暂停获取停止了录音
+    if(this.state.stoppedRecording){
+      this.prepareRecordingPath(this.state.audioPath);
     }
 
-    _renderButton(title, onPress, active) {
-      var style = (active) ? styles.activeButtonText : styles.buttonText;
+    this.setState({recording: true});
 
-      return (
-        <TouchableHighlight style={styles.button} onPress={onPress}>
-          <Text style={style}>
-            {title}
-          </Text>
-        </TouchableHighlight>
-      );
-    }
-
-    async _stop() {
-      if (!this.state.recording) {
-        console.warn('Can\'t stop, not recording!');
-        return;
-      }
-
-      this.setState({stoppedRecording: true, recording: false});
-
-      try {
-        const filePath = await AudioRecorder.stopRecording();
-
-        if (Platform.OS === 'android') {
-          this._finishRecording(true, filePath);
-        }
-        return filePath;
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    async _record() {
-      if (this.state.recording) {
-        console.warn('Already recording!');
-        return;
-      }
-
-      if (!this.state.hasPermission) {
-        console.warn('Can\'t record, no permission granted!');
-        return;
-      }
-
-      if(this.state.stoppedRecording){
-        this.prepareRecordingPath(this.state.audioPath);
-      }
-
-      this.setState({recording: true});
-
-      try {
-        const filePath = await AudioRecorder.startRecording();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    _finishRecording(didSucceed, filePath) {
-      this.setState({ finished: didSucceed });
-      console.log(`Finished recording of duration ${this.state.currentTime} seconds at path: ${filePath}`);
-    }
-
-    render() {
-      return (
-        <View style={styles.container}>
-          <View style={styles.controls}>
-            {this._renderButton("RECORD", () => {this._record()}, this.state.recording )}
-            {this._renderButton("STOP", () => {this._stop()} )}
-            <Text style={styles.progressText}>{this.state.currentTime}s</Text>
-          </View>
-        </View>
-      );
+    try {
+      const filePath = await AudioRecorder.startRecording();
+    } catch (error) {
+      console.error(error);
     }
   }
 
-  var styles = StyleSheet.create({
+  async stop() {
+    // 如果没有在录音
+    if (!this.state.recording) {
+      console.warn('没有录音, 无需停止!');
+      return;
+    }
+
+    this.setState({stoppedRecording: true, recording: false});
+
+    try {
+      const filePath = await AudioRecorder.stopRecording();
+
+      if (Platform.OS === 'android') {
+        this.finishRecording(true, filePath);
+      }
+      return filePath;
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+
+  finishRecording(didSucceed, filePath) {
+      this.setState({ finished: didSucceed });
+      console.warn(`Finished recording of duration ${this.state.currentTime} seconds at path: ${filePath}`);
+    }
+
+  componentDidMount () {
+
+    // 页面加载完成后获取权限
+    this.checkPermission().then((hasPermission) => {
+      this.setState({ hasPermission });
+
+      //如果未授权, 则执行下面的代码
+      if (!hasPermission) return;
+      this.prepareRecordingPath(this.state.audioPath);
+
+      AudioRecorder.onProgress = (data) => {
+        this.setState({currentTime: Math.floor(data.currentTime)});
+      };
+
+      AudioRecorder.onFinished = (data) => {
+        if (Platform.OS === 'ios') {
+          this.finishRecording(data.status === "OK", data.audioFileURL);
+        }
+      };
+    })
+  }
+
+  render() {
+    return (
+      <View>
+      <TouchableHighlight  onPressIn={this.record} onPressOut={this.stop} style={styles.button}>
+      <Text>录音
+      </Text>
+    </TouchableHighlight>
+      </View>
+    )
+  }
+}
+
+var styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: "#2b608a",
@@ -170,7 +164,6 @@ export default class Chat extends Component {
     },
     activeButtonText: {
       fontSize: 20,
-      color: "#B81F00"
+      color: "pink"
     }
-
   });

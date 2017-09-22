@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableHighlight, Platform, PermissionsAndroid } from 'react-native';
 import {AudioRecorder, AudioUtils} from 'react-native-audio';
-import { Recognizer, Synthesizer, SpeechConstant } from "react-native-speech-iflytek";
+// import { Recognizer, Synthesizer, SpeechConstant } from "react-native-speech-iflytek";/
 // let audioPath = AudioUtils.DocumentDirectoryPath + '/test.aac';
 // 目录/data/user/0/com.opms_rn/files/test.aac
 
@@ -13,7 +13,7 @@ export default class Chat extends Component {
       recording: false,                                                   //是否正在录音
       stoppedRecording: false,                                            //是否停止了录音
       finished: false,                                                    //是否完成录音
-      audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',          //路径下的文件名
+      audioPath: AudioUtils.DownloadsDirectoryPath  + '/sample.pcm',          //路径下的文件名
       hasPermission: undefined,                                           //是否获取权限
     };
     this.prepareRecordingPath = this.prepareRecordingPath.bind(this);     //执行录音的方法
@@ -32,8 +32,8 @@ export default class Chat extends Component {
       SampleRate: 22050,
       Channels: 1,
       AudioQuality: "Low",            //录音质量
-      AudioEncoding: "aac",           //录音格式
-      AudioEncodingBitRate: 32000     //比特率
+      AudioEncoding: "pcm",           //录音格式
+      AudioEncodingBitRate: 16000     //比特率
     });
   }
 

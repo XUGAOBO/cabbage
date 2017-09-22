@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableHighlight, Platform, PermissionsAndroid } from 'react-native';
 import {AudioRecorder, AudioUtils} from 'react-native-audio';
+import { Recognizer, Synthesizer, SpeechConstant } from "react-native-speech-iflytek";
 // let audioPath = AudioUtils.DocumentDirectoryPath + '/test.aac';
 // 目录/data/user/0/com.opms_rn/files/test.aac
 
@@ -20,6 +21,10 @@ export default class Chat extends Component {
     this.record = this.record.bind(this);                                 //录音
     this.stop = this.stop.bind(this);                                     //停止
     this.finishRecording = this.finishRecording.bind(this);
+  }
+
+  componentDidMount() {
+    Recognizer.init("59c4ca16");
   }
 
   prepareRecordingPath(audioPath){

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
+import { View, Text, StyleSheet, TouchableHighlight, Platform, PermissionsAndroid } from 'react-native';
 
-export default class Home extends Component {
+export default class Detial extends Component {
 
     constructor(...args) {
         super(...args);
@@ -13,7 +14,9 @@ export default class Home extends Component {
 
     render() {
         return (
-            <div>这是一个详情</div>
+            <View>
+            <Text>个人中心</Text>
+          </View>
         )
     }
 }

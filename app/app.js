@@ -153,8 +153,7 @@ const styles = StyleSheet.create({
     },
     page: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        flexDirection: 'row',
         backgroundColor: '#FFFFFF'
     },
 });

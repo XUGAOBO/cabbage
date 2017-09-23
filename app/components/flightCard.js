@@ -7,7 +7,7 @@ import {
     View
   } from 'react-native';
 const FLIGHT=require('../images/flight.png');
-export default class Detail extends Component {
+export default class FlightCard extends Component {
 
     constructor(...args) {
         super(...args);

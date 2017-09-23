@@ -44,7 +44,22 @@ export default class Chat extends Component {
           owner: 'user',
           content: '帮我查一下北京飞成都，12月6日的航班什么时候买比较划算？'
         },
-
+        {
+            owner: 'user',
+            content: '今天的最低价是2000元，你应该再等一等，过几天买价格可能还会更低，只要在11月25日之前下单。订阅这段行程，可能每张机票还可以省500元，航班价格趋于合理或者有上涨趋势时，小白将会在第一时间告知你~是否为你订阅此段行程？'
+          },
+          {
+            owner: 'robot',
+            content: '订阅'
+          },
+          {
+            owner: 'robot',
+            content: '好的，已为你订阅，你可以在“关注”中查看此行程的购买建议。查看“关注”请戳这里'
+          },
+          {
+            owner: 'user',
+            content: '帮我查一下北京飞成都，12月6日的航班什么时候买比较划算？'
+          },
       ],
     };
     this.prepareRecordingPath = this.prepareRecordingPath.bind(this);     //执行录音的方法

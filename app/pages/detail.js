@@ -62,24 +62,25 @@ export default class Detail extends Component {
 
     render() {
         return (
-            <View>
-                <ToolbarAndroid
-                actions={toolbarActions}
-                navIcon={BACK}
-                onIconClicked={() => this.setState({actionText: 'Icon clicked'})}
-                style={styles.toolbar}
-                title="低价信息">
-                <ImageBackground style={{height:100,width:300}} source={CABBAGE_BG}></ImageBackground>
-                </ToolbarAndroid>
-                <View style={styles.container}>
-                <FlatList 
-                     data={this.state.dataSource}
-                     renderItem={({item, index}) => (
-                         <FlightInfo dataSource={item} key={index} />
-                     )}
-                 />
-               </View>
-            </View>
+            <View style={styles.container}>
+            <FlatList 
+                 data={this.state.dataSource}
+                 renderItem={({item, index}) => (
+                     <FlightInfo dataSource={item} key={index} />
+                 )}
+             />
+           </View>
+            // <View>
+            //     <ToolbarAndroid
+            //     actions={toolbarActions}
+            //     navIcon={BACK}
+            //     onIconClicked={() => this.setState({actionText: 'Icon clicked'})}
+            //     style={styles.toolbar}
+            //     title="低价信息">
+            //     <ImageBackground style={{height:100,width:300}} source={CABBAGE_BG}></ImageBackground>
+            //     </ToolbarAndroid>
+                
+            // </View>
         )
     }
 }

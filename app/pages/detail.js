@@ -6,9 +6,12 @@ import {
     Image,
     View,
     FlatList,
-    ImageBackground
+    ImageBackground,
+    ToastAndroid
   } from 'react-native';
 import FlightInfo from '../components/flightInfo';
+import {host} from '../utils/constants';
+import * as api from '../api';
   const ToolbarAndroid = require('ToolbarAndroid');
   const BACK = require('../images/back.png');
   const toolbarActions = [
@@ -21,43 +24,20 @@ export default class Detail extends Component {
         super(...args);
         this.state = {
             actionText: '',
-            dataSource: [
-                    {
-                
-                        "airlineInfo": "上海-深圳",
-                
-                        "noticeContent": "wow,您订阅的2017-10-1到深圳的航班降价了，当前价1260.0你现在可以从京东机票预定海南航空的机票",
-                
-                        "publishTimeDesc": "2017-09-21 21:02"
-                    },
-                
-                    {
-                        "airlineInfo": "北京-深圳",
+            dataSource: []
+        }
+    }
+
+    componentDidMount() {
+        this.getDataSource();
         
-                        "noticeContent": "您订阅的2017-10-1到深圳的航班当前价格为:1234.0请继续等待，直到2017-09-28",
-       
-                        "publishTimeDesc": "2017-09-21 21:02"
-                    },
-                    {
-                
-                        "airlineInfo": "深圳-北京",
-           
-                        "noticeContent": "您订阅的2017-10-1到北京的航班当前价格为:1234.0请继续等待，直到2017-09-28",
-  
-                        "publishTimeDesc": "2017-09-21 21:02"
-                    },
-                
-                    {
-                        "airlineInfo": "北京-上海",
-                
-                
-                        "noticeContent": "wow,您订阅的2017-10-1到上海的航班降价了，当前价1260.0你现在可以从京东机票预定海南航空的机票",
-                
-                
-                        "publishTimeDesc": "2017-09-21 21:02"
-                 
-                    }]
-        };
+    }
+
+    async getDataSource() {
+        const data = await api.noticeList();
+        this.setState({
+            dataSource: data
+        })
     }
 
     render() {

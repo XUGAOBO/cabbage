@@ -5,14 +5,22 @@ import {
     Button,
     Image,
     View,
-    FlatList
+    FlatList,
+    ImageBackground
   } from 'react-native';
-  import FlightInfo from '../components/flightInfo';
+import FlightInfo from '../components/flightInfo';
+  const ToolbarAndroid = require('ToolbarAndroid');
+  const BACK = require('../images/back.png');
+  const toolbarActions = [
+    {title: 'Filter'}
+  ];
+  const CABBAGE_BG = require('../images/cabbage.png');
 export default class Detail extends Component {
 
     constructor(...args) {
         super(...args);
         this.state = {
+            actionText: '',
             dataSource: [
                     {
                 
@@ -55,19 +63,33 @@ export default class Detail extends Component {
     render() {
         let {dataSource} = this.props;
         return (
-           <View style={styles.container}>
-           <FlatList 
-                data={this.state.dataSource}
-                renderItem={({item, index}) => (
-                    <FlightInfo dataSource={item} key={index} />
-                )}
-            />
-          </View>
+            <View>
+                <ToolbarAndroid
+                actions={toolbarActions}
+                navIcon={BACK}
+                onIconClicked={() => this.setState({actionText: 'Icon clicked'})}
+                style={styles.toolbar}
+                title="低价信息">
+                <ImageBackground style={{height:100,width:300}} source={CABBAGE_BG}></ImageBackground>
+                </ToolbarAndroid>
+                <View style={styles.container}>
+                <FlatList 
+                     data={this.state.dataSource}
+                     renderItem={({item, index}) => (
+                         <FlightInfo dataSource={item} key={index} />
+                     )}
+                 />
+               </View>
+            </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
+    toolbar: {
+        backgroundColor: '#e9eaed',
+        height: 56,
+      },
     container: {
       flex: 1,
       paddingHorizontal: 20,

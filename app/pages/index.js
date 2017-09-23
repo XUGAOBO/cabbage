@@ -9,7 +9,7 @@ import {
   } from 'react-native';
   import FlightCard from '../components/flightCard';
 const CABBAGE_BG=require('../images/cabbage.png');
-const CABBAGE = require('../images/portrait.png');
+const CABBAGE = require('../images/cabbage_icon.png');
 export default class Home extends Component {
 
     constructor(...args) {

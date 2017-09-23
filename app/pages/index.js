@@ -67,7 +67,9 @@ export default class Home extends Component {
                     <Image style={styles.icon} source={CABBAGE} />
                     <Text style={styles.title}>Cabbage</Text>
                     <Text style={styles.title_zn}>智游助手</Text>
-                    <Text style={styles.speak} onPress={this.onButtonPress}>和TA对话</Text>
+                    <View style={styles.speak}>
+                        <Text style={styles.speck_text}onPress={this.onButtonPress}>和TA对话</Text>
+                    </View>
                 </View>
             </View>
             <View style={styles.content}>
@@ -122,13 +124,15 @@ const styles = StyleSheet.create({
         width: 126,
         height: 32,
         marginTop: 16,
+        justifyContent: "center",
         alignItems: 'center',
-        textAlign: 'center',
-        lineHeight: 20,
         backgroundColor: '#02E695',
         borderRadius:2,
-        color: '#fff',
+    },
+    speck_text:{
         fontSize: 16,
+        textAlign:"center",
+        color: '#fff'
     },
     content: {
         flex:1,

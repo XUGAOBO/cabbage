@@ -11,7 +11,6 @@ import {
 const CABBAGE_BG=require('../images/cabbage.png');
 const CABBAGE = require('../images/cabbage_icon.png');
 export default class Home extends Component {
-
     constructor(...args) {
         super(...args);
         this.state = {
@@ -48,17 +47,13 @@ export default class Home extends Component {
                 }
             ],
         };
-        this.onButtonPress = this.onButtonPress.bind(this);
     }
 
     componentDidMount() {
     }
 
-    onButtonPress() {
-
-    }
-
     render() {
+        const {navigate} = this.props.navigation;
         return (
            <View style={styles.container}>
            <Image style={styles.bg} source={CABBAGE_BG} />
@@ -67,9 +62,7 @@ export default class Home extends Component {
                     <Image style={styles.icon} source={CABBAGE} />
                     <Text style={styles.title}>Cabbage</Text>
                     <Text style={styles.title_zn}>智游助手</Text>
-                    <View style={styles.speak}>
-                        <Text style={styles.speck_text}onPress={this.onButtonPress}>和TA对话</Text>
-                    </View>
+                    <Text style={styles.speak} onPress={()=>{navigate('Chat')}}>和TA对话</Text>
                 </View>
             </View>
             <View style={styles.content}>
@@ -124,15 +117,13 @@ const styles = StyleSheet.create({
         width: 126,
         height: 32,
         marginTop: 16,
-        justifyContent: "center",
         alignItems: 'center',
+        textAlign: 'center',
+        lineHeight: 20,
         backgroundColor: '#02E695',
         borderRadius:2,
-    },
-    speck_text:{
+        color: '#fff',
         fontSize: 16,
-        textAlign:"center",
-        color: '#fff'
     },
     content: {
         flex:1,

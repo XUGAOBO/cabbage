@@ -61,7 +61,6 @@ export default class Detail extends Component {
     }
 
     render() {
-        let {dataSource} = this.props;
         return (
             <View>
                 <ToolbarAndroid

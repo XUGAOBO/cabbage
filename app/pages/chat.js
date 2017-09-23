@@ -189,57 +189,60 @@ export default class Chat extends Component {
         ToastAndroid.CENTER,
       )
     } else {
-      const res = this._upload();
-      if(res.status == 200 ) {
-        res = res.body;
-        newMsg = [ // 用户录制的音频
-          {
-           owner: 'user',
-           content: res.ask
-          }
-         ];
-         this._showMessage(newMsg);
-        if(res.status == 1) { // 请求机票接口,,------不知道显示啥东西 // ToDo
-          const bestData = this.getBestFlight(res.answer); // 最优航班
-          newMsg = [{
-            owner: 'robot',
-            content: `${bestData}-是否为你订阅此段行程？`
-          }]
-        }else if(res.status == 2) { // 语音解析成功，交互结果
-          newMsg = [{
-            owner: 'robot',
-            content: res.answer.text
-          }];
-        }else if (res.status == 3) { // 含义不明确
-         newMsg = [{
-           owner: 'robot',
-           content: '语音含义不明确'
-         }];
-        }else if (res.status == 4) { // 解析失败
-          newMsg = [{
-            owner: 'robot',
-            content: '解析失败!!!'
-          }];
-        }else if(res.status == 5) { // 订阅成功
-          newMsg = [{
-            owner: 'robot',
-            content: '好的，已为您订阅，您可以在“关注”中查看此行程的购买建议。'
-          }]
-        }
-      } else if(res.status == 404) {
-        ToastAndroid.showWithGravity(
-          '系统异常',
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
-        )
-      }else {
-        ToastAndroid.showWithGravity(
-          '不好意思,我们解析不了',
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
-        )
-      }
-      this._showMessage(newMsg);
+      // const res = this._upload();
+      // if(res.status == 200 ) {
+      //   res = res.body;
+      //   newMsg = [ // 用户录制的音频
+      //     {
+      //      owner: 'user',
+      //      content: res.ask
+      //     }
+      //    ];
+      //    this._showMessage(newMsg);
+      //   if(res.status == 1) { // 请求机票接口,,------不知道显示啥东西 // ToDo
+      //     const bestData = this.getBestFlight(res.answer); // 最优航班
+      //     newMsg = [{
+      //       owner: 'robot',
+      //       content: `${bestData}-是否为你订阅此段行程？`
+      //     }]
+      //   }else if(res.status == 2) { // 语音解析成功，交互结果
+      //     newMsg = [{
+      //       owner: 'robot',
+      //       content: res.answer.text
+      //     }];
+      //   }else if (res.status == 3) { // 含义不明确
+      //    newMsg = [{
+      //      owner: 'robot',
+      //      content: '语音含义不明确'
+      //    }];
+      //   }else if (res.status == 4) { // 解析失败
+      //     newMsg = [{
+      //       owner: 'robot',
+      //       content: '解析失败!!!'
+      //     }];
+      //   }else if(res.status == 5) { // 订阅成功
+      //     newMsg = [{
+      //       owner: 'robot',
+      //       content: '好的，已为您订阅，您可以在“关注”中查看此行程的购买建议。'
+      //     }]
+      //   }
+      // } else if(res.status == 404) {
+      //   ToastAndroid.showWithGravity(
+      //     '系统异常',
+      //     ToastAndroid.SHORT,
+      //     ToastAndroid.CENTER,
+      //   )
+      // }else {
+      //   ToastAndroid.showWithGravity(
+      //     '不好意思,我们解析不了',
+      //     ToastAndroid.SHORT,
+      //     ToastAndroid.CENTER,
+      //   )
+      // }
+       this._showMessage([{
+         owner: 'user',
+         content: '******'
+       }]);
     }
   }
 
@@ -289,33 +292,38 @@ export default class Chat extends Component {
 
   async _upload() {
     // this._showModal();
-    let newMessage = null;
-    if(this.refs.listRef !== undefined) {
+    let newMessage = [];
+    if(this._listRef !== undefined) {
       console.warn('not undefined------------');
-      this.refs.listRef.scrollToEnd();
+      this._listRef.scrollToEnd();
     } else {
       console.warn('undefined !!!!!!!!!!!!!')
     }
-    let formData = new FormData();
-    formData.append('file', {
-      uri: 'file://' + AudioUtils.DownloadsDirectoryPath + '/sample.pcm',
-      name: 'sample.pcm',
-    })
+    // let formData = new FormData();
+    // formData.append('file', {
+    //   uri: 'file://' + AudioUtils.DownloadsDirectoryPath + '/sample.pcm',
+    //   name: 'sample.pcm',
+    // })
 
-    const res = await fetch('', {
-      method: 'POST',
-      headers: {'Content-Type': 'multipart/form-data'},
-      body: formData
-    });
-    return res.json()
+    // const res = await fetch('', {
+    //   method: 'POST',
+    //   headers: {'Content-Type': 'multipart/form-data'},
+    //   body: formData
+    // });
+    // return res.json()
   }
 
   _showMessage(newMsg) {
     this.setState(function(preState){
       return {
-        dataSource: preState.dataSource.push(newMsg)
+        dataSource: preState.dataSource.concat(newMsg)
       }
+    }, () =>{
+      this._srollToEnd();
     });
+  }
+  _srollToEnd() {
+    this._listRef !== undefined && this._listRef.scrollToEnd();
   }
 
   _showModal() {

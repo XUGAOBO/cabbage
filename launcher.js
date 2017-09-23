@@ -32,6 +32,8 @@ const SimpleApp = TabNavigator({
         screen: Detail,
         navigationOptions: {
             tabBarLabel: '消息',
+            tabBarVisible: true,
+            title: '低价信息',
             tabBarIcon: ({tintColor,focused}) => (
                 focused
                     ?
@@ -71,7 +73,7 @@ const SimpleApp = TabNavigator({
     tabBarPosition: 'bottom',
     swipeEnabled:false,
     animationEnabled:true,
-    initialRouteName: 'Detail',
+    initialRouteName: 'Home',
     tabBarOptions: {
         style: {
             height:50,
@@ -105,7 +107,13 @@ const SimpleApp = TabNavigator({
         }
     },
     Chat: {
-        screen: Chat
+        screen: Chat,
+        navigationOptions:{
+            headerTitle:'小白',
+            headerTitleStyle: {
+                alignSelf:'center'
+            }
+        }
     }
   });
 

@@ -61,26 +61,27 @@ export default class Detail extends Component {
     }
 
     render() {
+        const {navigate} = this.props.navigation;
         return (
             <View style={styles.container}>
-            <FlatList 
-                 data={this.state.dataSource}
-                 renderItem={({item, index}) => (
-                     <FlightInfo dataSource={item} key={index} />
-                 )}
-             />
-           </View>
-            // <View>
-            //     <ToolbarAndroid
-            //     actions={toolbarActions}
-            //     navIcon={BACK}
-            //     onIconClicked={() => this.setState({actionText: 'Icon clicked'})}
-            //     style={styles.toolbar}
-            //     title="低价信息">
-            //     <ImageBackground style={{height:100,width:300}} source={CABBAGE_BG}></ImageBackground>
-            //     </ToolbarAndroid>
-                
-            // </View>
+                <ToolbarAndroid
+                actions={toolbarActions}
+                navIcon={BACK}
+                onIconClicked={() => navigate('Home')}
+                style={styles.toolbar}
+                title="低价信息">
+                <ImageBackground style={{height:100,width:300}} source={CABBAGE_BG}>
+                </ImageBackground>
+                </ToolbarAndroid>
+                <View style={styles.content}>
+                <FlatList 
+                     data={this.state.dataSource}
+                     renderItem={({item, index}) => (
+                         <FlightInfo dataSource={item} key={index} />
+                     )}
+                 />
+               </View>
+            </View>
         )
     }
 }
@@ -91,8 +92,11 @@ const styles = StyleSheet.create({
         height: 56,
       },
     container: {
-      flex: 1,
-      paddingHorizontal: 20,
-      backgroundColor: '#F9F9F9'
+        flex: 1
+    },
+    content: {
+        flex: 1,
+        paddingHorizontal: 20,
+        backgroundColor: '#F9F9F9'
     }
   });

@@ -1,20 +1,29 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, Platform, PermissionsAndroid } from 'react-native';
-import {AudioRecorder, AudioUtils} from 'react-native-audio';
-// import { Recognizer, Synthesizer, SpeechConstant } from "react-native-speech-iflytek";/
-// let audioPath = AudioUtils.DocumentDirectoryPath + '/test.aac';
-// 目录/data/user/0/com.opms_rn/files/test.aac
+import React, {
+  Component
+} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableHighlight,
+  Platform,
+  PermissionsAndroid
+} from 'react-native';
+import {
+  AudioRecorder,
+  AudioUtils
+} from '../recorder';
 
 export default class Chat extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-      currentTime: 0.0,                                                   //开始录音到现在的持续时间
-      recording: false,                                                   //是否正在录音
-      stoppedRecording: false,                                            //是否停止了录音
-      finished: false,                                                    //是否完成录音
-      audioPath: AudioUtils.DownloadsDirectoryPath  + '/sample.pcm',          //路径下的文件名
-      hasPermission: undefined,                                           //是否获取权限
+      currentTime: 0.0, //开始录音到现在的持续时间
+      recording: false, //是否正在录音
+      stoppedRecording: false, //是否停止了录音
+      finished: false, //是否完成录音
+      audioPath: AudioUtils.DownloadsDirectoryPath + '/sample.pcm', //路径下的文件名
+      hasPermission: undefined, //是否获取权限
     };
     this.prepareRecordingPath = this.prepareRecordingPath.bind(this);     //执行录音的方法
     this.checkPermission = this.checkPermission.bind(this);               //检测是否授权
@@ -22,18 +31,36 @@ export default class Chat extends Component {
     this.stop = this.stop.bind(this);                                     //停止
     this.finishRecording = this.finishRecording.bind(this);
   }
-
   componentDidMount() {
-    Recognizer.init("59c4ca16");
+    // 页面加载完成后获取权限
+    this.checkPermission().then((hasPermission) => {
+      this.setState({
+        hasPermission
+      });
+
+      //如果未授权, 则执行下面的代码
+      if (!hasPermission) return;
+      this.prepareRecordingPath(this.state.audioPath);
+
+      AudioRecorder.onProgress = (data) => {
+        this.setState({
+          currentTime: Math.floor(data.currentTime)
+        });
+      };
+
+      AudioRecorder.onFinished = (data) => {
+        if (Platform.OS === 'ios') {
+          this.finishRecording(data.status === "OK", data.audioFileURL);
+        }
+      };
+    })
   }
 
-  prepareRecordingPath(audioPath){
+  prepareRecordingPath(audioPath) {
     AudioRecorder.prepareRecordingAtPath(audioPath, {
-      SampleRate: 16000,
-      Channels: 1,
-      AudioQuality: "Low",            //录音质量
-      AudioEncoding: "pcm",           //录音格式
-      AudioEncodingBitRate: 256000     //比特率
+      sampleRateInHz: 16000,
+      channelConfig: 'CHANNEL_IN_MONO',
+      audioEncoding: 'ENCODING_PCM_16BIT',
     });
   }
 
@@ -55,6 +82,7 @@ export default class Chat extends Component {
   }
 
   async record() {
+    console.warn('recorder-------begin')
     // 如果正在录音
     if (this.state.recording) {
       console.warn('正在录音中!');
@@ -68,27 +96,33 @@ export default class Chat extends Component {
     }
 
     //如果暂停获取停止了录音
-    if(this.state.stoppedRecording){
+    if (this.state.stoppedRecording) {
       this.prepareRecordingPath(this.state.audioPath);
     }
 
-    this.setState({recording: true});
+    this.setState({
+      recording: true
+    });
 
     try {
-      const filePath = await AudioRecorder.startRecording();
+      await AudioRecorder.startRecording();
     } catch (error) {
       console.error(error);
     }
   }
 
   async stop() {
+    console.warn('执行stop');
     // 如果没有在录音
     if (!this.state.recording) {
       console.warn('没有录音, 无需停止!');
       return;
     }
 
-    this.setState({stoppedRecording: true, recording: false});
+    this.setState({
+      stoppedRecording: true,
+      recording: false
+    });
 
     try {
       const filePath = await AudioRecorder.stopRecording();
@@ -104,70 +138,53 @@ export default class Chat extends Component {
   }
 
   finishRecording(didSucceed, filePath) {
-      this.setState({ finished: didSucceed });
-      console.warn(`Finished recording of duration ${this.state.currentTime} seconds at path: ${filePath}`);
-    }
-
-  componentDidMount () {
-
-    // 页面加载完成后获取权限
-    this.checkPermission().then((hasPermission) => {
-      this.setState({ hasPermission });
-      //如果未授权, 则执行下面的代码
-      if (!hasPermission) return;
-      this.prepareRecordingPath(this.state.audioPath);
-
-      AudioRecorder.onProgress = (data) => {
-        this.setState({currentTime: Math.floor(data.currentTime)});
-      };
-
-      AudioRecorder.onFinished = (data) => {
-        if (Platform.OS === 'ios') {
-          this.finishRecording(data.status === "OK", data.audioFileURL);
-        }
-      };
-    })
+    this.setState({
+      finished: didSucceed
+    });
+    console.warn(`Finished recording of duration ${this.state.currentTime} seconds at path: ${filePath}`);
   }
 
   render() {
-    return (
+    return ( 
       <View>
-      <TouchableHighlight  onPressIn={this.record} onPressOut={this.stop} style={styles.button}>
-      <Text>录音
-      </Text>
-    </TouchableHighlight>
+        <TouchableHighlight onPressIn = {this.record} onPressOut = {this.stop} style = {styles.button} >
+          <Text>长按录音</Text>
+        </TouchableHighlight > 
+        <TouchableHighlight  style = {styles.button} >
+          <Text>测试button</Text>
+        </TouchableHighlight > 
       </View>
     )
   }
 }
 
 var styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: "#2b608a",
-    },
-    controls: {
-      justifyContent: 'center',
-      alignItems: 'center',
-      flex: 1,
-    },
-    progressText: {
-      paddingTop: 50,
-      fontSize: 50,
-      color: "#fff"
-    },
-    button: {
-      padding: 20
-    },
-    disabledButtonText: {
-      color: '#eee'
-    },
-    buttonText: {
-      fontSize: 20,
-      color: "#fff"
-    },
-    activeButtonText: {
-      fontSize: 20,
-      color: "pink"
-    }
-  });
+  container: {
+    flex: 1,
+    backgroundColor: "#2b608a",
+  },
+  controls: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  progressText: {
+    paddingTop: 50,
+    fontSize: 50,
+    color: "#fff"
+  },
+  button: {
+    padding: 20
+  },
+  disabledButtonText: {
+    color: '#eee'
+  },
+  buttonText: {
+    fontSize: 20,
+    color: "#fff"
+  },
+  activeButtonText: {
+    fontSize: 20,
+    color: "pink"
+  }
+});

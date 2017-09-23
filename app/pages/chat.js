@@ -203,7 +203,9 @@ export default class Chat extends Component {
        <View style={styles.footer}>
         <Image source={require('../images/keyboard.png')}  style={styles.icon} />
         <TouchableOpacity onPressIn={this._onPressInButton.bind(this)} onPressOut={this._onPressOutButton.bind(this)}>
-          <Button style={styles.btn} title="请按住说话" color="#F5F5F5"></Button>
+          <View style={styles.btn}>
+           <Text style={styles.btn_txt}>请按住说话</Text>
+          </View>
         </TouchableOpacity>
        </View>
       </View>
@@ -219,17 +221,25 @@ var styles = StyleSheet.create({
   },
   footer: {
     height: 57,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
   icon: {
     width: 24,
     height: 20,
-    marginRight: 17
+    marginRight: 10
   },
   btn: {
+    width: 300,
+    height: 38,
+    backgroundColor: '#F5F5F5',
     borderRadius: 2,
-    fontSize: 17,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  btn_txt: {
     color: '#485465',
+    fontSize: 17,
   }
 });

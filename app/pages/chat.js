@@ -8,7 +8,8 @@ import {
   TouchableHighlight,
   Platform,
   PermissionsAndroid,
-  FlatList
+  FlatList,
+  Button
 } from 'react-native';
 import {
   AudioRecorder,
@@ -159,6 +160,13 @@ export default class Chat extends Component {
 
   }
 
+  _onPressInButton() {
+    alert('onPressiIn');
+  }
+  _onPressOutButton() {
+    alert('onPressOut');
+  }
+
   finishRecording(didSucceed, filePath) {
     this.setState({
       finished: didSucceed
@@ -175,6 +183,12 @@ export default class Chat extends Component {
           <MessageItem dataSource={item} />
         }
        />
+       <View style={styles.footer}>
+        <Image source={require('../images/keyboard.png')}  style={styles.icon}/>
+        <TouchableOpacity onPressIn={this._onPressInButton().bind(this)} onPressOut={this._onPressOutButton().bind(this)}>
+          <Button style={styles.btn} title="请按住说话" color="#F5F5F5"></Button>
+        </TouchableOpacity>
+       </View>
       </View>
     )
   }
@@ -186,4 +200,19 @@ var styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#F9F9F9',
   },
+  footer: {
+    height: 57,
+    justifyContent: 'center',
+    alignItem: 'center',
+  },
+  icon: {
+    width: 24,
+    height: 20,
+    marginRight: 17
+  },
+  btn: {
+    borderRadius: 2,
+    fontSize: 17,
+    color: '#485465',
+  }
 });

@@ -26,7 +26,7 @@ export default class MessageItem extends Component {
     return (
       <View style={styles.container_wrap}>
         <View style={[styles.container, itemDriection]}>
-          <Image source={icon} style={[styles.icon, iconMargin]}/>
+          <Image source={icon} style={[styles.icon, iconMargin]} />
           <View style={styles.msg_wrap}>
             <Text style={styles.msg_content}>{dataSource.content}</Text>
           </View>

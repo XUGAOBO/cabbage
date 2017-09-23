@@ -9,7 +9,9 @@ import {
   Platform,
   PermissionsAndroid,
   FlatList,
-  Button
+  Button,
+  Image,
+  TouchableOpacity,
 } from 'react-native';
 import {
   AudioRecorder,
@@ -199,8 +201,8 @@ export default class Chat extends Component {
         }
        />
        <View style={styles.footer}>
-        <Image source={require('../images/keyboard.png')}  style={styles.icon}/>
-        <TouchableOpacity onPressIn={this._onPressInButton().bind(this)} onPressOut={this._onPressOutButton().bind(this)}>
+        <Image source={require('../images/keyboard.png')}  style={styles.icon} />
+        <TouchableOpacity onPressIn={this._onPressInButton.bind(this)} onPressOut={this._onPressOutButton.bind(this)}>
           <Button style={styles.btn} title="请按住说话" color="#F5F5F5"></Button>
         </TouchableOpacity>
        </View>
@@ -218,7 +220,7 @@ var styles = StyleSheet.create({
   footer: {
     height: 57,
     justifyContent: 'center',
-    alignItem: 'center',
+    alignItems: 'center',
   },
   icon: {
     width: 24,

@@ -12,6 +12,7 @@ import {
   Button,
   Image,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import {
   AudioRecorder,
@@ -179,16 +180,26 @@ export default class Chat extends Component {
     this.setState({
       finished: didSucceed
     });
-    console.warn(`Finished recording of duration ${this.state.currentTime} seconds at path: ${filePath}`);
+    let recordDuration = this.state.currentTime;
+    if(recordDuration < 1) {
+      ToastAndroid.showWithGravity(
+        '说话时间太短,再来一次行吧',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      )
+    } else {
+      const res = this._upload()
+    }
   }
-
+  _captureRef = (ref) => { this._listRef = ref; };
   render() {
     return ( 
       <View style={styles.container}>
        <FlatList
         data={this.state.dataSource}
         renderItem={({item}) =>
-          <MessageItem dataSource={item} />
+          <MessageItem dataSource={item}
+        ref="listRef" />
         }
        />
        <View style={styles.footer}>
@@ -208,8 +219,27 @@ export default class Chat extends Component {
     )
   }
 
-  _upload() {
-    this.showModal();
+  _upload = () => {
+    // this._showModal();
+    let newMessage = null;
+    if(this.refs.listRef !== undefined) {
+      console.warn('not undefined------------');
+      this.refs.listRef.scrollToEnd();
+    } else {
+      console.warn('undefined !!!!!!!!!!!!!')
+    }
+    let formData = new FormData();
+    formData.append('file', {
+      uri: 'file://' + AudioUtils.DownloadsDirectoryPath + '/sample.pcm',
+      name: 'sample.pcm',
+    })
+
+    const res = await fetch('', {
+      method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data'},
+      body: formData
+    });
+    return res.json()
   }
 
   _showMessage() {
@@ -226,6 +256,7 @@ export default class Chat extends Component {
       modalVisible:  false
     })
   }
+
 }
 
 var styles = StyleSheet.create({

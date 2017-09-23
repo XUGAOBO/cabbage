@@ -19,6 +19,8 @@ import {
 } from '../recorder';
 
 import MessageItem from '../components/messageItem'
+import Modal from 'react-native-modal';
+import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
 
 export default class Chat extends Component {
   constructor(props) {
@@ -30,6 +32,7 @@ export default class Chat extends Component {
       finished: false, //是否完成录音
       audioPath: AudioUtils.DownloadsDirectoryPath + '/sample.pcm', //路径下的文件名
       hasPermission: undefined, //是否获取权限
+      modalVisible: false,
       dataSource: [
         {
           owner: 'user',
@@ -116,34 +119,25 @@ export default class Chat extends Component {
 
     return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, rationale)
       .then((result) => {
-        // alert(result);     //结果: granted ,    PermissionsAndroid.RESULTS.GRANTED 也等于 granted
         return (result === true || PermissionsAndroid.RESULTS.GRANTED)
       })
   }
 
   async record() {
-    console.warn('recorder-------begin')
-    // 如果正在录音
     if (this.state.recording) {
       console.warn('正在录音中!');
       return;
     }
-
-    //如果没有获取权限
     if (!this.state.hasPermission) {
-      console.warn('没有获取录音权限!');
+      console.error('没有获取录音权限!');
       return;
     }
-
-    //如果暂停获取停止了录音
     if (this.state.stoppedRecording) {
       this.prepareRecordingPath(this.state.audioPath);
     }
-
     this.setState({
       recording: true
     });
-
     try {
       await AudioRecorder.startRecording();
     } catch (error) {
@@ -152,10 +146,7 @@ export default class Chat extends Component {
   }
 
   async stop() {
-    console.warn('执行stop');
-    // 如果没有在录音
     if (!this.state.recording) {
-      console.warn('没有录音, 无需停止!');
       return;
     }
 
@@ -178,10 +169,10 @@ export default class Chat extends Component {
   }
 
   _onPressInButton() {
-    alert('onPressiIn');
+    this.record();
   }
   _onPressOutButton() {
-    alert('onPressOut');
+    this.stop();
   }
 
   finishRecording(didSucceed, filePath) {
@@ -208,8 +199,32 @@ export default class Chat extends Component {
           </View>
         </TouchableOpacity>
        </View>
+       <Modal isVisible={this.state.modalVisible}>
+        <View style={{ flex: 1, justifyContent:'center', alignItems:'center' }}>
+          <Bubbles size={10} color="#FFF" />
+        </View>
+      </Modal>
       </View>
     )
+  }
+
+  _upload() {
+    this.showModal();
+  }
+
+  _showMessage() {
+
+  }
+
+  _showModal() {
+    this.setState({
+      modalVisible:  true
+    })
+  }
+  _hideModal() {
+    this.setState({
+      modalVisible:  false
+    })
   }
 }
 
@@ -241,5 +256,8 @@ var styles = StyleSheet.create({
   btn_txt: {
     color: '#485465',
     fontSize: 17,
-  }
+  },
+  modal: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
 });

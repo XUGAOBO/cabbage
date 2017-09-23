@@ -4,41 +4,64 @@ import {
     Text,
     Button,
     Image,
-    View
+    View,
+    FlatList
   } from 'react-native';
-const FLIGHT=require('../images/flight.png');
+  import FlightInfo from '../components/flightInfo';
 export default class Detail extends Component {
 
     constructor(...args) {
         super(...args);
         this.state = {
+            dataSource: [
+                    {
+                
+                        "airlineInfo": "上海-深圳",
+                
+                        "noticeContent": "wow,您订阅的2017-10-1到深圳的航班降价了，当前价1260.0你现在可以从京东机票预定海南航空的机票",
+                
+                        "publishTimeDesc": "2017-09-21 21:02"
+                    },
+                
+                    {
+                        "airlineInfo": "北京-深圳",
+        
+                        "noticeContent": "您订阅的2017-10-1到深圳的航班当前价格为:1234.0请继续等待，直到2017-09-28",
+       
+                        "publishTimeDesc": "2017-09-21 21:02"
+                    },
+                    {
+                
+                        "airlineInfo": "深圳-北京",
+           
+                        "noticeContent": "您订阅的2017-10-1到北京的航班当前价格为:1234.0请继续等待，直到2017-09-28",
+  
+                        "publishTimeDesc": "2017-09-21 21:02"
+                    },
+                
+                    {
+                        "airlineInfo": "北京-上海",
+                
+                
+                        "noticeContent": "wow,您订阅的2017-10-1到上海的航班降价了，当前价1260.0你现在可以从京东机票预定海南航空的机票",
+                
+                
+                        "publishTimeDesc": "2017-09-21 21:02"
+                 
+                    }]
         };
-        this.suggest = this.suggest.bind(this);
-        this.pay = this.pay.bind(this);
-    }
-
-    suggest() {
-
-    }
-    pay() {
-
     }
 
     render() {
         let {dataSource} = this.props;
         return (
            <View style={styles.container}>
-                <Text style={styles.date}>{dataSource.depTime}</Text>
-                <View style={styles.segment}>
-                    <Text style={styles.city}>{dataSource.arrCity}</Text>
-                    <Image style={styles.icon} source={FLIGHT} />
-                    <Text style={styles.city}>{dataSource.depCity}</Text>
-                </View>
-                <Text style={styles.cutLine}></Text>
-                <View style={styles.bottom}>
-                    <Text style={styles.tip} onPress={this.suggest}>购买建议</Text>
-                    <Text style={styles.tip} onPress={this.pay}>立即够买</Text>
-                </View>
+           <FlatList 
+                data={this.state.dataSource}
+                renderItem={({item, index}) => (
+                    <FlightInfo dataSource={item} key={index} />
+                )}
+            />
           </View>
         )
     }
@@ -46,43 +69,8 @@ export default class Detail extends Component {
 
 const styles = StyleSheet.create({
     container: {
-      height: 140,
-      borderRadius: 6,
-      backgroundColor: "#fff",
-      marginTop: 20,
-      padding:15
-    },
-    date: {
-        fontSize: 16,
-        color: '#A8B4C4',
-        paddingBottom: 10
-    },
-    segment: {
-        flexDirection: "row",
-        justifyContent: "space-around",
-        paddingBottom: 10
-    },
-    icon: {
-        width: 27,
-        height: 21
-    },
-    city: {
-        fontSize: 20,
-        color: '#485465'
-    },
-    cutLine: {
-        height: 1,
-        backgroundColor: '#E9E9E9',
-    },
-    bottom: {
-        paddingTop: 20,
-        flexDirection: "row",
-        justifyContent: "flex-end",
-        alignItems: "center",
-    },
-    tip: {
-        color: '#02E695',
-        fontSize: 13,
-        marginRight: 10
+      flex: 1,
+      paddingHorizontal: 20,
+      backgroundColor: '#F9F9F9'
     }
   });

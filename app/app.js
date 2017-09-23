@@ -53,15 +53,15 @@ export default class App extends Component {
           };
           break;
        case 'Chat':
-        tabNomal=TAB_MESSAGE_NORMAL;
-        tabPress=TAB_MESSAGE_PRESS;
+       tabNomal=TAB_PERSONAL_NORMAL;
+       tabPress=TAB_PERSONAL_PRESS;
         current = () => {
             return <Chat />
         };
         break;
         case 'Detail':
-        tabNomal=TAB_PERSONAL_NORMAL;
-        tabPress=TAB_PERSONAL_PRESS;
+        tabNomal=TAB_MESSAGE_NORMAL;
+        tabPress=TAB_MESSAGE_PRESS;
         current = () => {
             return <Detail />
         };
@@ -92,9 +92,9 @@ export default class App extends Component {
             <TabNavigator
              tabBarStyle={styles.tab}
             >
-            {this.renderTabView('消息','Chat',false)}
+            {this.renderTabView('消息','Detail',false)}
             {this.renderTabView('小白','Home',true)}
-            {this.renderTabView('个人中心', 'Detail', false)}
+            {this.renderTabView('个人中心', 'Chat', false)}
             </TabNavigator>
           );
         }

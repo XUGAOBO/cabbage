@@ -5,8 +5,10 @@ import {
     Button,
     Image,
     View,
-    FlatList
+    FlatList,
+    ToastAndroid
   } from 'react-native';
+  import * as api from '../api';
   import FlightCard from '../components/flightCard';
 const CABBAGE_BG=require('../images/cabbage.png');
 const CABBAGE = require('../images/cabbage_icon.png');
@@ -19,15 +21,14 @@ export default class Home extends Component {
     }
 
     componentDidMount() {
-        fetch('http://forecast.xb.jd.com/plane/watchList?userPin=xn_test')
-        .then((resp) => {
-            alert('resp');
-            this.setState({
-                dataSource: resp
-            })
-        }).catch(() => {
-            alert('aaaaa');
-        }) 
+        this.getDataSource();
+    }
+
+    async getDataSource() {
+        const data = await api.watchList();
+        this.setState({
+            dataSource: data
+        })
     }
 
     render() {

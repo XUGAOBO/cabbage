@@ -1,0 +1,1 @@
+export const host = 'http://192.168.193.105:8018/';

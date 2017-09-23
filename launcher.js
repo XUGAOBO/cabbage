@@ -22,7 +22,7 @@ const TAB_PERSONAL_PRESS=require('./app/images/personal.png');
 
 const styles = StyleSheet.create({
     icon: {
-        width: 22,
+        width: 28,
         height: 25
       }
   });
@@ -76,24 +76,24 @@ const SimpleApp = TabNavigator({
     initialRouteName: 'Home',
     tabBarOptions: {
         style: {
-            height:50,
+            height:58,
             backgroundColor: '#f4f5f6'
         },
         showIcon: true,
         pressColor: '#eaeaea',
         activeBackgroundColor:'white',
-        activeTintColor:'green',
+        activeTintColor:'#02E695',
         inactiveBackgroundColor:'#f4f5f6',
         inactiveTintColor:'#000',
         indicatorStyle: {
             height: 0
         },
         iconStyle: {
-            width: 22,
+            width: 28,
             height: 25
         },
         labelStyle: {
-            height: 25
+            height: 20
         },
         showLabel:true,
     }
@@ -109,10 +109,7 @@ const SimpleApp = TabNavigator({
     Chat: {
         screen: Chat,
         navigationOptions:{
-            headerTitle:'小白',
-            headerTitleStyle: {
-                alignSelf:'center'
-            }
+            headerTitle:'小白'
         }
     }
   });

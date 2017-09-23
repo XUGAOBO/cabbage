@@ -61,17 +61,19 @@ export default class Detail extends Component {
     }
 
     render() {
+        const {navigate} = this.props.navigation;
         return (
-            <View>
+            <View style={styles.container}>
                 <ToolbarAndroid
                 actions={toolbarActions}
                 navIcon={BACK}
-                onIconClicked={() => this.setState({actionText: 'Icon clicked'})}
+                onIconClicked={() => navigate('Home')}
                 style={styles.toolbar}
                 title="低价信息">
-                <ImageBackground style={{height:100,width:300}} source={CABBAGE_BG}></ImageBackground>
+                <ImageBackground style={{height:100,width:300}} source={CABBAGE_BG}>
+                </ImageBackground>
                 </ToolbarAndroid>
-                <View style={styles.container}>
+                <View style={styles.content}>
                 <FlatList 
                      data={this.state.dataSource}
                      renderItem={({item, index}) => (
@@ -90,8 +92,11 @@ const styles = StyleSheet.create({
         height: 56,
       },
     container: {
-      flex: 1,
-      paddingHorizontal: 20,
-      backgroundColor: '#F9F9F9'
+        flex: 1
+    },
+    content: {
+        flex: 1,
+        paddingHorizontal: 20,
+        backgroundColor: '#F9F9F9'
     }
   });

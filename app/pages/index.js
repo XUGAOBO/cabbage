@@ -14,42 +14,20 @@ export default class Home extends Component {
     constructor(...args) {
         super(...args);
         this.state = {
-            dataSource: [
-                {
-                    "arrCity": "深圳",
-                    "depCity": "北京",
-                    "depTime": "2017-10-1",
-                    "userPin": "xn_test"
-                },
-                {
-                    "arrCity": "北京",
-                    "depCity": "上海",
-                    "depTime": "2017-10-1",
-                    "userPin": "xn_test"
-                },
-                {
-                    "arrCity": "北京",
-                    "depCity": "深圳",
-                    "depTime": "2017-10-11",
-                    "userPin": "xn_test"
-                },
-                {
-                    "arrCity": "北京",
-                    "depCity": "深圳",
-                    "depTime": "2017-10-11",
-                    "userPin": "xn_test"
-                },
-                {
-                    "arrCity": "北京",
-                    "depCity": "深圳",
-                    "depTime": "2017-10-11",
-                    "userPin": "xn_test"
-                }
-            ],
+            dataSource: [],
         };
     }
 
     componentDidMount() {
+        fetch('http://forecast.xb.jd.com/plane/watchList?userPin=xn_test')
+        .then((resp) => {
+            alert('resp');
+            this.setState({
+                dataSource: resp
+            })
+        }).catch(() => {
+            alert('aaaaa');
+        }) 
     }
 
     render() {

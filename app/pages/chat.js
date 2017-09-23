@@ -7,12 +7,15 @@ import {
   StyleSheet,
   TouchableHighlight,
   Platform,
-  PermissionsAndroid
+  PermissionsAndroid,
+  FlatList
 } from 'react-native';
 import {
   AudioRecorder,
   AudioUtils
 } from '../recorder';
+
+import MessageItem from '../components/messageItem'
 
 export default class Chat extends Component {
   constructor(props) {
@@ -24,6 +27,25 @@ export default class Chat extends Component {
       finished: false, //是否完成录音
       audioPath: AudioUtils.DownloadsDirectoryPath + '/sample.pcm', //路径下的文件名
       hasPermission: undefined, //是否获取权限
+      dataSource: [
+        {
+          owner: 'user',
+          content: '今天的最低价是2000元，你应该再等一等，过几天买价格可能还会更低，只要在11月25日之前下单。订阅这段行程，可能每张机票还可以省500元，航班价格趋于合理或者有上涨趋势时，小白将会在第一时间告知你~是否为你订阅此段行程？'
+        },
+        {
+          owner: 'robot',
+          content: '订阅'
+        },
+        {
+          owner: 'robot',
+          content: '好的，已为你订阅，你可以在“关注”中查看此行程的购买建议。查看“关注”请戳这里'
+        },
+        {
+          owner: 'user',
+          content: '帮我查一下北京飞成都，12月6日的航班什么时候买比较划算？'
+        },
+
+      ],
     };
     this.prepareRecordingPath = this.prepareRecordingPath.bind(this);     //执行录音的方法
     this.checkPermission = this.checkPermission.bind(this);               //检测是否授权
@@ -146,13 +168,13 @@ export default class Chat extends Component {
 
   render() {
     return ( 
-      <View>
-        <TouchableHighlight onPressIn = {this.record} onPressOut = {this.stop} style = {styles.button} >
-          <Text>长按录音</Text>
-        </TouchableHighlight > 
-        <TouchableHighlight  style = {styles.button} >
-          <Text>测试button</Text>
-        </TouchableHighlight > 
+      <View style={styles.container}>
+       <FlatList
+        data={this.state.dataSource}
+        renderItem={({item}) =>
+          <MessageItem dataSource={item} />
+        }
+       />
       </View>
     )
   }
@@ -161,30 +183,7 @@ export default class Chat extends Component {
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#2b608a",
-  },
-  controls: {
     justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
+    backgroundColor: '#F9F9F9',
   },
-  progressText: {
-    paddingTop: 50,
-    fontSize: 50,
-    color: "#fff"
-  },
-  button: {
-    padding: 20
-  },
-  disabledButtonText: {
-    color: '#eee'
-  },
-  buttonText: {
-    fontSize: 20,
-    color: "#fff"
-  },
-  activeButtonText: {
-    fontSize: 20,
-    color: "pink"
-  }
 });

@@ -54,7 +54,6 @@ export default class Home extends Component {
 
     render() {
         const {navigate} = this.props.navigation;
-        alert(navigate)
         return (
            <View style={styles.container}>
            <Image style={styles.bg} source={CABBAGE_BG} />
@@ -63,7 +62,7 @@ export default class Home extends Component {
                     <Image style={styles.icon} source={CABBAGE} />
                     <Text style={styles.title}>Cabbage</Text>
                     <Text style={styles.title_zn}>智游助手</Text>
-                    <Text style={styles.speak} onPress={()=>navigate('Chat')}>和TA对话</Text>
+                    <Text style={styles.speak} onPress={()=>{navigate('Chat')}}>和TA对话</Text>
                 </View>
             </View>
             <View style={styles.content}>

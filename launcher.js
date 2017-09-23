@@ -26,8 +26,7 @@ const styles = StyleSheet.create({
         height: 25
       }
   });
-
-// 导航注册
+  // 导航注册
 const SimpleApp = TabNavigator({
     Detail: {
         screen: Detail,
@@ -75,7 +74,7 @@ const SimpleApp = TabNavigator({
     initialRouteName: 'Home',
     tabBarOptions: {
         style: {
-            height:52,
+            height:50,
             backgroundColor: '#f4f5f6'
         },
         showIcon: true,
@@ -87,7 +86,27 @@ const SimpleApp = TabNavigator({
         indicatorStyle: {
             height: 0
         },
+        iconStyle: {
+            width: 22,
+            height: 25
+        },
+        labelStyle: {
+            height: 25
+        },
         showLabel:true,
     }
 })
-AppRegistry.registerComponent('cabbageRN', () => SimpleApp);
+
+  const MyApp = StackNavigator({
+    SimpleApp: {
+        screen: SimpleApp,
+        navigationOptions: {
+            header: null
+        }
+    },
+    Chat: {
+        screen: Chat
+    }
+  });
+
+AppRegistry.registerComponent('cabbageRN', () => MyApp);

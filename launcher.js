@@ -73,7 +73,7 @@ const SimpleApp = TabNavigator({
     tabBarPosition: 'bottom',
     swipeEnabled:false,
     animationEnabled:true,
-    initialRouteName: 'Detail',
+    initialRouteName: 'Home',
     tabBarOptions: {
         style: {
             height:58,

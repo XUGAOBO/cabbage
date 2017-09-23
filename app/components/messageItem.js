@@ -18,6 +18,17 @@ export default class MessageItem extends Component {
     }
   }
 
+  getContent(content) {
+
+    if (content.indexOf('关注') > -1) {
+      return <TouchableOpacity >
+      <Text style={styles.msg_content}>{content}</Text>
+      <Text style={[styles.msg_content, styles.msg_content_focus]} onPress={()=>{this.props.navigateRN('Home')}}>查看“关注请戳这里”</Text>
+      </TouchableOpacity>
+    }
+    return <Text style={styles.msg_content}>{content}</Text>
+  }
+
   render() {
     let {dataSource} = this.props;
     let icon = dataSource.owner === 'user' ? require('../images/user.png') : require('../images/portrait.png');
@@ -28,7 +39,9 @@ export default class MessageItem extends Component {
         <View style={[styles.container, itemDriection]}>
           <Image source={icon} style={[styles.icon, iconMargin]} />
           <View style={styles.msg_wrap}>
-            <Text style={styles.msg_content}>{dataSource.content}</Text>
+            {
+              this.getContent(dataSource.content)
+            }
           </View>
         </View>
       </View>
@@ -64,4 +77,7 @@ const styles = StyleSheet.create({
     color: '#485465',
     maxWidth: 256,
   },
+  msg_content_focus: {
+    color: '#02E695'
+  }
 }); 

@@ -61,7 +61,7 @@ export default class Chat extends Component {
           },
           {
             owner: 'robot',
-            content: '好的，已为你订阅，你可以在“关注”中查看此行程的购买建议。查看“关注”请戳这里'
+            content: '好的，已为你订阅，你可以在“关注”中查看此行程的购买建议。'
           },
           {
             owner: 'user',
@@ -181,6 +181,7 @@ export default class Chat extends Component {
       finished: didSucceed
     });
     let recordDuration = this.state.currentTime;
+    let newMsg = null;
     if(recordDuration < 1) {
       ToastAndroid.showWithGravity(
         '说话时间太短,再来一次行吧',
@@ -188,18 +189,85 @@ export default class Chat extends Component {
         ToastAndroid.CENTER,
       )
     } else {
-      const res = this._upload()
+      const res = this._upload();
+      if(res.status == 200 ) {
+        res = res.body;
+        newMsg = [ // 用户录制的音频
+          {
+           owner: 'user',
+           content: res.ask
+          }
+         ];
+         this._showMessage(newMsg);
+        if(res.status == 1) { // 请求机票接口,,------不知道显示啥东西 // ToDo
+          const bestData = this.getBestFlight(res.answer); // 最优航班
+          newMsg = [{
+            owner: 'robot',
+            content: `${bestData}-是否为你订阅此段行程？`
+          }]
+        }else if(res.status == 2) { // 语音解析成功，交互结果
+          newMsg = [{
+            owner: 'robot',
+            content: res.answer.text
+          }];
+        }else if (res.status == 3) { // 含义不明确
+         newMsg = [{
+           owner: 'robot',
+           content: '语音含义不明确'
+         }];
+        }else if (res.status == 4) { // 解析失败
+          newMsg = [{
+            owner: 'robot',
+            content: '解析失败!!!'
+          }];
+        }else if(res.status == 5) { // 订阅成功
+          newMsg = [{
+            owner: 'robot',
+            content: '好的，已为您订阅，您可以在“关注”中查看此行程的购买建议。'
+          }]
+        }
+      } else if(res.status == 404) {
+        ToastAndroid.showWithGravity(
+          '系统异常',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        )
+      }else {
+        ToastAndroid.showWithGravity(
+          '不好意思,我们解析不了',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        )
+      }
+      this._showMessage(newMsg);
     }
   }
+
+  async getBestFlight(params) { //ToDo
+    const res = await fetch('url', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params)
+    })
+    return res.json();
+  }
+
   _captureRef = (ref) => { this._listRef = ref; };
   render() {
+    const {navigate} = this.props.navigation;
     return ( 
       <View style={styles.container}>
        <FlatList
+        ref={this._captureRef.bind(this)} 
         data={this.state.dataSource}
         renderItem={({item}) =>
-          <MessageItem dataSource={item}
-        ref="listRef" />
+          <MessageItem 
+          navigateRN={navigate}
+          dataSource={item}
+          />
         }
        />
        <View style={styles.footer}>
@@ -219,7 +287,7 @@ export default class Chat extends Component {
     )
   }
 
-  _upload = () => {
+  async _upload() {
     // this._showModal();
     let newMessage = null;
     if(this.refs.listRef !== undefined) {
@@ -242,8 +310,12 @@ export default class Chat extends Component {
     return res.json()
   }
 
-  _showMessage() {
-
+  _showMessage(newMsg) {
+    this.setState(function(preState){
+      return {
+        dataSource: preState.dataSource.push(newMsg)
+      }
+    });
   }
 
   _showModal() {

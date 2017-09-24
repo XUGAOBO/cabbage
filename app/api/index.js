@@ -16,8 +16,11 @@ const cabbage = {
     // 价格列表
     watchList: `${host}plane/watchList`,
     // 关注列表
-    noticeList: `${host}plane/noticeList`
+    noticeList: `${host}plane/noticeList`,
+    // 添加关注
+    addList: `${host}plane/addWatch`
 }
 
 export const watchList = () => get(cabbage.watchList, {userPin: 'xn_test'});
 export const noticeList = () => get(cabbage.noticeList, {userPin: 'xn_test'});
+export const addList = (po) => get(cabbage.addList, po);

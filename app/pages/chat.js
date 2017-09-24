@@ -22,6 +22,7 @@ import {
 import MessageItem from '../components/messageItem'
 import Modal from 'react-native-modal';
 import { Bubbles, DoubleBounce, Bars, Pulse } from 'react-native-loader';
+import * as api from '../api';
 
 export default class Chat extends Component {
   constructor(props) {
@@ -38,10 +39,6 @@ export default class Chat extends Component {
           {
             owner: 'robot',
             content: '您好,请问有什么需要帮您的吗?'
-          },
-          {
-            owner: 'robot',
-            content: '关注,请问有什么需要帮您的吗?'
           }
       ],
     };
@@ -174,11 +171,11 @@ export default class Chat extends Component {
            content: res.ask
           });
         if(res.status == 1) { // 请求机票接口,,------不知道显示啥东西 // ToDo
-        //   const bestData = this.getBestFlight(res.answer); // 最优航班
-        //   newMsg = [{
-        //     owner: 'robot',
-        //     content: `${bestData}-是否为你订阅此段行程？`
-        //   }]
+          const bestData = await this.getBestFlight(res.answer); // 最优航班
+          newMsg = [{
+            owner: 'robot',
+            content: `${bestData}-是否为你订阅此段行程？`
+          }]
         }else if(res.status == 2) { // 语音解析成功，交互结果
           newMsg.push({
             owner: 'robot',
@@ -217,16 +214,29 @@ export default class Chat extends Component {
     }
   }
 
-  async getBestFlight(params) { //ToDo
-    const res = await fetch('url', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(params)
-    })
-    return res.json();
+  async getBestFlight(params) {
+      let po = {};
+      params.forEach((item) => {
+        if (item.name == 'startLoc.city') {
+            po.arrCity = item.normValue;
+        }
+        if (item.name == 'endLoc.city') {
+            po.depCity = item.normValue;
+        }
+        if (item.name == 'startDate') {
+            po.depTime = item.normValue;
+        }
+      });
+      const data = await api.addList();
+    // const res = await fetch('url', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(params)
+    // })
+    // return res.json();
   }
 
   _captureRef = (ref) => { this._listRef = ref; };

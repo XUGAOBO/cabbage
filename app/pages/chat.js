@@ -35,38 +35,14 @@ export default class Chat extends Component {
       hasPermission: undefined, //是否获取权限
       modalVisible: false,
       dataSource: [
-        {
-          owner: 'user',
-          content: '今天的最低价是2000元，你应该再等一等，过几天买价格可能还会更低，只要在11月25日之前下单。订阅这段行程，可能每张机票还可以省500元，航班价格趋于合理或者有上涨趋势时，小白将会在第一时间告知你~是否为你订阅此段行程？'
-        },
-        {
-          owner: 'robot',
-          content: '订阅'
-        },
-        {
-          owner: 'robot',
-          content: '好的，已为你订阅，你可以在“关注”中查看此行程的购买建议。查看“关注”请戳这里'
-        },
-        {
-          owner: 'user',
-          content: '帮我查一下北京飞成都，12月6日的航班什么时候买比较划算？'
-        },
-        {
-            owner: 'user',
-            content: '今天的最低价是2000元，你应该再等一等，过几天买价格可能还会更低，只要在11月25日之前下单。订阅这段行程，可能每张机票还可以省500元，航班价格趋于合理或者有上涨趋势时，小白将会在第一时间告知你~是否为你订阅此段行程？'
+          {
+            owner: 'robot',
+            content: '您好,请问有什么需要帮您的吗?'
           },
           {
             owner: 'robot',
-            content: '订阅'
-          },
-          {
-            owner: 'robot',
-            content: '好的，已为你订阅，你可以在“关注”中查看此行程的购买建议。'
-          },
-          {
-            owner: 'user',
-            content: '帮我查一下北京飞成都，12月6日的航班什么时候买比较划算？'
-          },
+            content: '关注,请问有什么需要帮您的吗?'
+          }
       ],
     };
     this.prepareRecordingPath = this.prepareRecordingPath.bind(this);     //执行录音的方法
@@ -182,69 +158,77 @@ export default class Chat extends Component {
     });
     let recordDuration = this.state.currentTime;
     let newMsg = null;
-    if(recordDuration < 1) {
+    if(recordDuration < 0.5) {
       ToastAndroid.showWithGravity(
         '说话时间太短,再来一次行吧',
         ToastAndroid.SHORT,
         ToastAndroid.CENTER,
       )
     } else {
-      // const res = this._upload();
-      // if(res.status == 200 ) {
-      //   res = res.body;
-      //   newMsg = [ // 用户录制的音频
-      //     {
-      //      owner: 'user',
-      //      content: res.ask
-      //     }
-      //    ];
-      //    this._showMessage(newMsg);
-      //   if(res.status == 1) { // 请求机票接口,,------不知道显示啥东西 // ToDo
-      //     const bestData = this.getBestFlight(res.answer); // 最优航班
-      //     newMsg = [{
-      //       owner: 'robot',
-      //       content: `${bestData}-是否为你订阅此段行程？`
-      //     }]
-      //   }else if(res.status == 2) { // 语音解析成功，交互结果
-      //     newMsg = [{
-      //       owner: 'robot',
-      //       content: res.answer.text
-      //     }];
-      //   }else if (res.status == 3) { // 含义不明确
-      //    newMsg = [{
-      //      owner: 'robot',
-      //      content: '语音含义不明确'
-      //    }];
-      //   }else if (res.status == 4) { // 解析失败
-      //     newMsg = [{
-      //       owner: 'robot',
-      //       content: '解析失败!!!'
-      //     }];
-      //   }else if(res.status == 5) { // 订阅成功
-      //     newMsg = [{
-      //       owner: 'robot',
-      //       content: '好的，已为您订阅，您可以在“关注”中查看此行程的购买建议。'
-      //     }]
-      //   }
-      // } else if(res.status == 404) {
-      //   ToastAndroid.showWithGravity(
-      //     '系统异常',
-      //     ToastAndroid.SHORT,
-      //     ToastAndroid.CENTER,
-      //   )
-      // }else {
-      //   ToastAndroid.showWithGravity(
-      //     '不好意思,我们解析不了',
-      //     ToastAndroid.SHORT,
-      //     ToastAndroid.CENTER,
-      //   )
-      // }
-       this._showMessage([{
-         owner: 'user',
-         content: '******'
-       }]);
+        this.getChatData();
+    //   const res = this._upload();
+    //   this._hideModal();
+    //   alert(res.status);
+    //   if(res.status == 200 ) {
+    //     res = res.body;
+    //     newMsg = [ // 用户录制的音频
+    //       {
+    //        owner: 'user',
+    //        content: res.ask
+    //       }
+    //      ];
+    //      this._showMessage(newMsg);
+    //     if(res.status == 1) { // 请求机票接口,,------不知道显示啥东西 // ToDo
+    //       const bestData = this.getBestFlight(res.answer); // 最优航班
+    //       newMsg = [{
+    //         owner: 'robot',
+    //         content: `${bestData}-是否为你订阅此段行程？`
+    //       }]
+    //     }else if(res.status == 2) { // 语音解析成功，交互结果
+    //       newMsg = [{
+    //         owner: 'robot',
+    //         content: res.answer.text
+    //       }];
+    //     }else if (res.status == 3) { // 含义不明确
+    //      newMsg = [{
+    //        owner: 'robot',
+    //        content: '语音含义不明确'
+    //      }];
+    //     }else if (res.status == 4) { // 解析失败
+    //       newMsg = [{
+    //         owner: 'robot',
+    //         content: '解析失败!!!'
+    //       }];
+    //     }else if(res.status == 5) { // 订阅成功
+    //       newMsg = [{
+    //         owner: 'robot',
+    //         content: '好的，已为您订阅，您可以在“关注”中查看此行程的购买建议。'
+    //       }]
+    //     }
+    //   } else if(res.status == 404) {
+    //     ToastAndroid.showWithGravity(
+    //       '系统异常',
+    //       ToastAndroid.SHORT,
+    //       ToastAndroid.CENTER,
+    //     )
+    //   }else {
+    //     ToastAndroid.showWithGravity(
+    //       '不好意思,我们解析不了',
+    //       ToastAndroid.SHORT,
+    //       ToastAndroid.CENTER,
+    //     )
+    //   }
+    //    this._showMessage([{
+    //      owner: 'user',
+    //      content: '******'
+    //    }]);
     }
   }
+
+  async getChatData() {
+    const data = await this._upload();
+    alert(data);
+}
 
   async getBestFlight(params) { //ToDo
     const res = await fetch('url', {
@@ -291,26 +275,25 @@ export default class Chat extends Component {
   }
 
   async _upload() {
-    // this._showModal();
-    let newMessage = [];
-    if(this._listRef !== undefined) {
-      console.warn('not undefined------------');
-      this._listRef.scrollToEnd();
-    } else {
-      console.warn('undefined !!!!!!!!!!!!!')
-    }
-    // let formData = new FormData();
-    // formData.append('file', {
-    //   uri: 'file://' + AudioUtils.DownloadsDirectoryPath + '/sample.pcm',
-    //   name: 'sample.pcm',
-    // })
-
-    // const res = await fetch('', {
-    //   method: 'POST',
-    //   headers: {'Content-Type': 'multipart/form-data'},
-    //   body: formData
-    // });
-    // return res.json()
+    this._showModal();
+    let formData = new FormData();
+    formData.append('file', {
+      uri: 'file://' + AudioUtils.DownloadsDirectoryPath + '/sample.pcm',
+      type: 'multipart/form-data',
+      name: 'sample.pcm',
+    })
+    formData.append('fm','pcm');
+    alert('fetch执行前');
+    let res = await fetch('http://47.95.117.162:8018/voice2.do')
+    .then((response) => response.json())
+    .then((responseJson) => JSON.parse(responseJson))
+    .catch((e) => {
+        res = {}
+        console.warn(e.message)
+    })
+    this._hideModal();
+    alert('fetch执行号');
+    return res;
   }
 
   _showMessage(newMsg) {

@@ -17,11 +17,28 @@ export default class Home extends Component {
         super(...args);
         this.state = {
             dataSource: [],
+            date: new Date().getTime(),
+            ready: false
         };
     }
 
     componentDidMount() {
         this.getDataSource();
+    }
+
+    componentDidUpdate() {
+        const { params } = this.props.navigation.state;
+        alert(params);
+        if (params.date !== this.state.date && !ready) {
+            this.setState(function(preState) {
+                return {
+                    date: params.date,
+                    ready: true
+                }
+            }, () => {
+                this.getDataSource();
+            })
+        }
     }
 
     async getDataSource() {

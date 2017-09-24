@@ -23,7 +23,7 @@ export default class MessageItem extends Component {
     if (content.indexOf('关注') > -1) {
       return <TouchableOpacity >
       <Text style={styles.msg_content}>{content}</Text>
-      <Text style={[styles.msg_content, styles.msg_content_focus]} onPress={()=>{this.props.navigateRN('Home')}}>查看“关注请戳这里”</Text>
+      <Text style={[styles.msg_content, styles.msg_content_focus]} onPress={()=>{this.props.navigateRN('Home', { date: new Date().getTime() })}}>查看“关注请戳这里”</Text>
       </TouchableOpacity>
     }
     return <Text style={styles.msg_content}>{content}</Text>

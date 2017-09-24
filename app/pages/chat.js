@@ -172,6 +172,7 @@ export default class Chat extends Component {
           });
         if(res.status == 1) { // 请求机票接口,,------不知道显示啥东西 // ToDo
           const bestData = await this.getBestFlight(res.answer); // 最优航班
+          alert(JSON.stringify(bestData));
           newMsg = [{
             owner: 'robot',
             content: `${bestData}-是否为你订阅此段行程？`
@@ -227,16 +228,9 @@ export default class Chat extends Component {
             po.depTime = item.normValue;
         }
       });
-      const data = await api.addList();
-    // const res = await fetch('url', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(params)
-    // })
-    // return res.json();
+      po.userPin = 'xn_test';
+      const data = await api.getBestList(po);
+      return data;
   }
 
   _captureRef = (ref) => { this._listRef = ref; };

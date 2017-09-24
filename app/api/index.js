@@ -18,9 +18,11 @@ const cabbage = {
     // 关注列表
     noticeList: `${host}plane/noticeList`,
     // 添加关注
-    addList: `${host}plane/addWatch`
+    addList: `${host}plane/addWatch`,
+    getBestList:  'http://172.27.35.6:8000/predict'
 }
 
 export const watchList = () => get(cabbage.watchList, {userPin: 'xn_test'});
 export const noticeList = () => get(cabbage.noticeList, {userPin: 'xn_test'});
 export const addList = (po) => get(cabbage.addList, po);
+export const getBestList = (po) => get(cabbage.getBestList, po);

@@ -35,6 +35,7 @@ export default class Chat extends Component {
       audioPath: AudioUtils.DownloadsDirectoryPath + '/sample.pcm', //路径下的文件名
       hasPermission: undefined, //是否获取权限
       modalVisible: false,
+      currentFlight: null,
       dataSource: [
           {
             owner: 'robot',
@@ -171,6 +172,7 @@ export default class Chat extends Component {
            content: res.ask
           });
         if(res.status == 1) { // 请求机票接口,,------不知道显示啥东西 // ToDo
+          _setCurrentFlight(res.answer);
           const bestData = await this.getBestFlight(res.answer); // 最优航班
           alert(JSON.stringify(bestData));
           newMsg = [{
@@ -193,6 +195,10 @@ export default class Chat extends Component {
                 content: '我好像没听懂'
               });
         }else if(res.status == 5) { // 订阅成功
+          this.setState({
+            currentFlight: 
+          });
+          await this._addWatch();
           newMsg.push({
             owner: 'robot',
             content: '好的，已为您订阅，您可以在“关注”中查看此行程的购买建议。'
@@ -231,6 +237,29 @@ export default class Chat extends Component {
       po.userPin = 'xn_test';
       const data = await api.getBestList(po);
       return data;
+  }
+
+  _setCurrentFlight(params) {
+    let po = {};
+    params.forEach((item) => {
+      if (item.name == 'startLoc.city') {
+          po.arrCity = item.normValue;
+      }
+      if (item.name == 'endLoc.city') {
+          po.depCity = item.normValue;
+      }
+      if (item.name == 'startDate') {
+          po.depTime = item.normValue;
+      }
+    });
+    this.setState({
+      currentFlight: po
+    })
+  }
+
+  async _addWatch() {
+    let po = this.state.currentFlight;
+    const data = await api.addList(po);
   }
 
   _captureRef = (ref) => { this._listRef = ref; };

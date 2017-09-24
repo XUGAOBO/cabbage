@@ -1,5 +1,6 @@
 
 import React, {Component} from 'react';
+import { NavigationActions } from 'react-navigation'
 import {
     StyleSheet,
     Text,
@@ -18,12 +19,23 @@ export default class MessageItem extends Component {
     }
   }
 
-  getContent(content) {
+  goToPath() {
+    const resetAction = NavigationActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({ routeName: 'SimpleApp'})
+        ]
+      })
+      const {navigate} = this.props.navigateRN;
+      this.props.navigateRN.dispatch(resetAction)
+      navigate('Home', { date: new Date().getTime() })
+  }
 
-    if (content.indexOf('关注') > -1) {
+  getContent(content) {
+    if (content && content.indexOf('关注') > -1) {
       return <TouchableOpacity >
       <Text style={styles.msg_content}>{content}</Text>
-      <Text style={[styles.msg_content, styles.msg_content_focus]} onPress={()=>{this.props.navigateRN('Home', { date: new Date().getTime() })}}>查看“关注请戳这里”</Text>
+      <Text style={[styles.msg_content, styles.msg_content_focus]} onPress={()=>{this.goToPath()}}>查看“关注请戳这里”</Text>
       </TouchableOpacity>
     }
     return <Text style={styles.msg_content}>{content}</Text>

@@ -12,6 +12,7 @@ import {
   import FlightCard from '../components/flightCard';
 const CABBAGE_BG=require('../images/cabbage.png');
 const CABBAGE = require('../images/cabbage_icon.png');
+const NODATA = require('../images/noData.png');
 export default class Home extends Component {
     constructor(...args) {
         super(...args);
@@ -23,21 +24,9 @@ export default class Home extends Component {
     }
 
     componentDidMount() {
-        this.getDataSource();
-    }
-
-    componentDidUpdate() {
         const { params } = this.props.navigation.state;
-        alert(params);
-        if (params.date !== this.state.date && !ready) {
-            this.setState(function(preState) {
-                return {
-                    date: params.date,
-                    ready: true
-                }
-            }, () => {
-                this.getDataSource();
-            })
+        if (params) {
+            this.getDataSource();
         }
     }
 
@@ -63,15 +52,21 @@ export default class Home extends Component {
                     </View>
                 </View>
             </View>
-            <View style={styles.content}>
-            <Text style={styles.attention}>我的关注</Text>
-            <FlatList 
-                data={this.state.dataSource}
-                renderItem={({item, index}) => (
-                    <FlightCard dataSource={item} key={index} />
-                )}
-            />
-            </View>
+            {
+                this.state.dataSource.length > 0 ? 
+                <View style={styles.content}>
+                <Text style={styles.attention}>我的关注</Text>
+                <FlatList 
+                    data={this.state.dataSource}
+                    renderItem={({item, index}) => (
+                        <FlightCard dataSource={item} key={index} />
+                    )}
+                />
+                </View> : 
+                <View style={styles.noData}>
+                <Image source={NODATA} />
+                </View>
+            }
           </View>
         )
     }
@@ -134,5 +129,10 @@ const styles = StyleSheet.create({
     attention: {
         color: '#485465',
         fontSize: 17
+    },
+    noData: {
+        flex:1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
   });

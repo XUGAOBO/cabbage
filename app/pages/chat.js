@@ -152,12 +152,12 @@ export default class Chat extends Component {
     this.stop();
   }
 
-  finishRecording(didSucceed, filePath) {
+  async finishRecording(didSucceed, filePath) {
     this.setState({
       finished: didSucceed
     });
     let recordDuration = this.state.currentTime;
-    let newMsg = null;
+    let newMsg = [];
     if(recordDuration < 0.5) {
       ToastAndroid.showWithGravity(
         '说话时间太短,再来一次行吧',
@@ -165,70 +165,57 @@ export default class Chat extends Component {
         ToastAndroid.CENTER,
       )
     } else {
-        this.getChatData();
-    //   const res = this._upload();
-    //   this._hideModal();
-    //   alert(res.status);
-    //   if(res.status == 200 ) {
-    //     res = res.body;
-    //     newMsg = [ // 用户录制的音频
-    //       {
-    //        owner: 'user',
-    //        content: res.ask
-    //       }
-    //      ];
-    //      this._showMessage(newMsg);
-    //     if(res.status == 1) { // 请求机票接口,,------不知道显示啥东西 // ToDo
-    //       const bestData = this.getBestFlight(res.answer); // 最优航班
-    //       newMsg = [{
-    //         owner: 'robot',
-    //         content: `${bestData}-是否为你订阅此段行程？`
-    //       }]
-    //     }else if(res.status == 2) { // 语音解析成功，交互结果
-    //       newMsg = [{
-    //         owner: 'robot',
-    //         content: res.answer.text
-    //       }];
-    //     }else if (res.status == 3) { // 含义不明确
-    //      newMsg = [{
-    //        owner: 'robot',
-    //        content: '语音含义不明确'
-    //      }];
-    //     }else if (res.status == 4) { // 解析失败
-    //       newMsg = [{
-    //         owner: 'robot',
-    //         content: '解析失败!!!'
-    //       }];
-    //     }else if(res.status == 5) { // 订阅成功
-    //       newMsg = [{
-    //         owner: 'robot',
-    //         content: '好的，已为您订阅，您可以在“关注”中查看此行程的购买建议。'
-    //       }]
-    //     }
-    //   } else if(res.status == 404) {
-    //     ToastAndroid.showWithGravity(
-    //       '系统异常',
-    //       ToastAndroid.SHORT,
-    //       ToastAndroid.CENTER,
-    //     )
-    //   }else {
-    //     ToastAndroid.showWithGravity(
-    //       '不好意思,我们解析不了',
-    //       ToastAndroid.SHORT,
-    //       ToastAndroid.CENTER,
-    //     )
-    //   }
-    //    this._showMessage([{
-    //      owner: 'user',
-    //      content: '******'
-    //    }]);
+      const res = await this._upload();
+      this._hideModal();
+      if(res.status == 200 ) {
+        res = res.body;
+        newMsg.push({ // 用户录制的音频
+           owner: 'user',
+           content: res.ask
+          });
+        if(res.status == 1) { // 请求机票接口,,------不知道显示啥东西 // ToDo
+        //   const bestData = this.getBestFlight(res.answer); // 最优航班
+        //   newMsg = [{
+        //     owner: 'robot',
+        //     content: `${bestData}-是否为你订阅此段行程？`
+        //   }]
+        }else if(res.status == 2) { // 语音解析成功，交互结果
+          newMsg.push({
+            owner: 'robot',
+            content: res.answer.text
+          });
+        }else if(res.status == 3) {
+            newMsg.push({
+                owner: 'robot',
+                content: res.answer
+              });
+        } else if ( res.status == 4) {
+            newMsg.push({
+                owner: 'robot',
+                content: '我好像没听懂'
+              });
+        }else if(res.status == 5) { // 订阅成功
+          newMsg.push({
+            owner: 'robot',
+            content: '好的，已为您订阅，您可以在“关注”中查看此行程的购买建议。'
+          })
+        }
+      } else if(res.status == 404) {
+        ToastAndroid.showWithGravity(
+          '系统异常',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        )
+      }else {
+        ToastAndroid.showWithGravity(
+          '不好意思,我们解析不了',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        )
+      }
+       this._showMessage(newMsg);
     }
   }
-
-  async getChatData() {
-    const data = await this._upload();
-    alert(data);
-}
 
   async getBestFlight(params) { //ToDo
     const res = await fetch('url', {
@@ -244,7 +231,6 @@ export default class Chat extends Component {
 
   _captureRef = (ref) => { this._listRef = ref; };
   render() {
-    const {navigate} = this.props.navigation;
     return ( 
       <View style={styles.container}>
        <FlatList
@@ -252,7 +238,7 @@ export default class Chat extends Component {
         data={this.state.dataSource}
         renderItem={({item}) =>
           <MessageItem 
-          navigateRN={navigate}
+          navigateRN={this.props.navigation}
           dataSource={item}
           />
         }
@@ -283,16 +269,18 @@ export default class Chat extends Component {
       name: 'sample.pcm',
     })
     formData.append('fm','pcm');
-    alert('fetch执行前');
-    let res = await fetch('http://47.95.117.162:8018/voice2.do')
-    .then((response) => response.json())
-    .then((responseJson) => JSON.parse(responseJson))
-    .catch((e) => {
-        res = {}
-        console.warn(e.message)
-    })
+    let res = await fetch('http://47.95.117.162:8018/voice2.do', {
+        method: 'POST',
+        headers: {'Content-Type': 'multipart/form-data'},
+        body: formData
+      })
+      .then((response) => response.json())
+      .then((responseJson) => JSON.parse(responseJson))
+        .catch((e) => {
+            res = {}
+            console.warn(e.message)
+        })
     this._hideModal();
-    alert('fetch执行号');
     return res;
   }
 
@@ -301,8 +289,11 @@ export default class Chat extends Component {
       return {
         dataSource: preState.dataSource.concat(newMsg)
       }
-    }, () =>{
-      this._srollToEnd();
+    }, () => {
+        setTimeout(() => {
+            this._srollToEnd();
+        },0);
+      
     });
   }
   _srollToEnd() {

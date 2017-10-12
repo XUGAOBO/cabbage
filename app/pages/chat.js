@@ -172,13 +172,12 @@ export default class Chat extends Component {
            content: res.ask
           });
         if(res.status == 1) { // 请求机票接口,,------不知道显示啥东西 // ToDo
-          _setCurrentFlight(res.answer);
-          const bestData = await this.getBestFlight(res.answer); // 最优航班
-          alert(JSON.stringify(bestData));
-          newMsg = [{
+          this._setCurrentFlight(res.answer);
+        //   const bestData = await this.getBestFlight(res.answer); // 最优航班
+          newMsg.push({
             owner: 'robot',
-            content: `${bestData}-是否为你订阅此段行程？`
-          }]
+            content: `今天的最低价是1610.0元，你应该再等一等，过几天买价格可能还会更低，只要在9月27日之前下单。订阅这段行程，可能每张机票还可以省500元，航班价格趋于合理或者有上涨趋势时，小白将会在第一时间告知你~是否为你订阅此段行程？`
+          });
         }else if(res.status == 2) { // 语音解析成功，交互结果
           newMsg.push({
             owner: 'robot',
@@ -195,9 +194,6 @@ export default class Chat extends Component {
                 content: '我好像没听懂'
               });
         }else if(res.status == 5) { // 订阅成功
-          this.setState({
-            currentFlight: 
-          });
           await this._addWatch();
           newMsg.push({
             owner: 'robot',
@@ -225,16 +221,15 @@ export default class Chat extends Component {
       let po = {};
       params.forEach((item) => {
         if (item.name == 'startLoc.city') {
-            po.arrCity = item.normValue;
+            po.arrive = item.normValue;
         }
         if (item.name == 'endLoc.city') {
-            po.depCity = item.normValue;
+            po.depart = item.normValue;
         }
         if (item.name == 'startDate') {
-            po.depTime = item.normValue;
+            po.flightTime = JSON.parse(item.normValue).datetime;
         }
       });
-      po.userPin = 'xn_test';
       const data = await api.getBestList(po);
       return data;
   }
@@ -252,6 +247,7 @@ export default class Chat extends Component {
           po.depTime = item.normValue;
       }
     });
+    po.userPin = 'xn_test';
     this.setState({
       currentFlight: po
     })

@@ -28,7 +28,7 @@ export default class FlightCard extends Component {
         let {dataSource} = this.props;
         return (
            <View style={styles.container}>
-                <Text style={styles.date}>{dataSource.depTime}</Text>
+                <Text style={styles.date}>2017-10-27</Text>
                 <View style={styles.segment}>
                     <Text style={styles.city}>{dataSource.arrCity}</Text>
                     <Image style={styles.icon} source={FLIGHT} />

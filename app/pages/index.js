@@ -58,9 +58,13 @@ export default class Home extends Component {
                 <Text style={styles.attention}>我的关注</Text>
                 <FlatList 
                     data={this.state.dataSource}
-                    renderItem={({item, index}) => (
-                        <FlightCard dataSource={item} key={index} />
-                    )}
+                    renderItem={({item, index}) => {
+                        // alert(item.depTime)
+                        // if (Object.prototype.toString.call('[object Object]')) {
+                        //     item.depTime = item.depTime.datetime;
+                        // }
+                        return <FlightCard dataSource={item} key={index} />
+                    }}
                 />
                 </View> : 
                 <View style={styles.noData}>

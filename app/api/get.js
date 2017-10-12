@@ -4,8 +4,8 @@ import { cacheLatest } from '../storage';
 
 export default async (url, query = null) => {
     query && (url += `?${qs.stringify(query)}`);
+    
     let res = {};
-    alert(JSON.stringify(url));
     try {
         res = await fetch(url)
         .then((response) => response.json())
